@@ -1,0 +1,94 @@
+server:
+  servlet:
+    context-path: /api/v1
+
+logging:
+  file:
+    name: logs/app.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: "logs/archived/app-%d{yyyy-MM-dd}.%i.log.gz"
+      max-file-size: 10MB
+      max-history: 10
+      total-size-cap: 100MB
+  level:
+    root: INFO
+    com.example.abcxyz: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.flywaydb: DEBUG
+  pattern:
+    console: |
+      %clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(%-5level) %clr([%X{traceId}]){yellow} %clr([%X{ipAddress}]){cyan} %clr([%X{userId}]){magenta} %clr(%logger{36}){blue} - %msg%n
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%X{traceId}] [%X{ipAddress}] [%X{userId}] %logger{36} - %msg%n"
+
+spring:
+  application:
+    name: api.movie.app
+  devtools:
+    restart:
+      enabled: false
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/movie_db_local}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:your_local_password}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 4
+      idle-timeout: 10000
+      max-lifetime: 1800000
+      connection-timeout: 5000
+      connection-test-query: "SELECT 1"
+      leak-detection-threshold: 3000
+      pool-name: phimcuatoi-hiraki-pool-
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: "0"
+    locations: classpath:db/migration
+
+  freemarker:
+    template-loader-path:
+      classpath:/templates
+    suffix: .ftlh
+
+  task:
+    execution:
+      pool:
+        core-size: 5
+        max-size: 15
+        queue-capacity: 100
+        keep-alive: "60s"
+        thread-name-prefix: mail-async-
+
+tmdb:
+  base-url: ${TMDB_BASE_URL:https://themoviedb.org/3/}
+  api-key: ${TMDB_API_KEY:provide_your_tmdb_key_in_env}
+
+jwt:
+  access-token-key: ${JWT_ACCESS_TOKEN_KEY:local_access_secret_key_placeholder_secure_minimum_length_must_be_enough}
+  refresh-token-key: ${JWT_REFRESH_TOKEN_KEY:local_refresh_secret_key_placeholder_secure_minimum_length_must_be_enough}
+  access-token-live-time: 5
+  refresh-token-live-time: 1
+
+redis:
+  host: ${REDIS_HOST:localhost}
+  port: ${REDIS_PORT:6379}
+  password: ${REDIS_PASSWORD:}
+
+mail:
+  host: ://gmail.com
+  port: 587
+  username: ${GMAIL_USER:your_email_local@gmail.com}
+  app-pass: ${GMAIL_APP_PASS:your_mail_app_password_local}
+  auth: true
+  start-tls: true
