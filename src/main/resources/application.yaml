@@ -77,8 +77,8 @@ tmdb:
 jwt:
   access-token-key: ${JWT_ACCESS_TOKEN_KEY:local_access_secret_key_placeholder_secure_minimum_length_must_be_enough}
   refresh-token-key: ${JWT_REFRESH_TOKEN_KEY:local_refresh_secret_key_placeholder_secure_minimum_length_must_be_enough}
-  access-token-live-time: 5
-  refresh-token-live-time: 1
+  access-token-live-time: ${ACCESS_TOKEN_LIVE_TIME:5}
+  refresh-token-live-time: ${REFRESH_TOKEN_LIVE_TIME:7}
 
 redis:
   host: ${REDIS_HOST:localhost}

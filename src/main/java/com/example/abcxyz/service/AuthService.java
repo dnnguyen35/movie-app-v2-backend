@@ -21,5 +21,7 @@ public interface AuthService {
     ResetPasswordResponse resetPassword(ResetPasswordRequest resetPasswordRequest) throws MessagingException,
             IOException, TemplateException;
 
-    RenewAccessTokenResponse renewAccessToken(RenewAccessTokenRequest renewAccessTokenRequest);
+    RenewAccessTokenResponse renewAccessToken(String refreshToken);
+
+    void logout(String refreshToken);
 }
