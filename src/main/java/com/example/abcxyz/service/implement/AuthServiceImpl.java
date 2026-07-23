@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
                 currentOtpExpireAt = Instant.now().getEpochSecond() + currentOtpRemain;
             }
 
-            this.redisTemplate.opsForValue().set(infoKey, updatedRegisterInfo, 900, TimeUnit.SECONDS);
+            this.redisTemplate.opsForValue().set(infoKey, updatedRegisterInfo, Duration.ofMinutes(15));
 
             return RegisterResponse.builder()
                     .message("OTP has been send to email")
@@ -89,8 +89,8 @@ public class AuthServiceImpl implements AuthService {
 
         long otpExpireAt = Instant.now().getEpochSecond() + 300;
 
-        this.redisTemplate.opsForValue().set(infoKey, registerRequest, 900, TimeUnit.SECONDS);
-        this.redisTemplate.opsForValue().set(otpKey, otpCode, 300, TimeUnit.SECONDS);
+        this.redisTemplate.opsForValue().set(infoKey, registerRequest, Duration.ofMinutes(15));
+        this.redisTemplate.opsForValue().set(otpKey, otpCode, Duration.ofMinutes(5));
 
         this.emailService.sendOtpEmail(registerRequest.getEmail(), otpCode);
 
@@ -204,8 +204,8 @@ public class AuthServiceImpl implements AuthService {
 
         long otpExpireAt = Instant.now().getEpochSecond() + 300;
 
-        this.redisTemplate.opsForValue().set(infoKey, redisRegisterRequest, 900, TimeUnit.SECONDS);
-        this.redisTemplate.opsForValue().set(otpKey, otpCode, 300, TimeUnit.SECONDS);
+        this.redisTemplate.opsForValue().set(infoKey, redisRegisterRequest, Duration.ofMinutes(15));
+        this.redisTemplate.opsForValue().set(otpKey, otpCode, Duration.ofMinutes(5));
 
         this.emailService.sendOtpEmail(resendOtpRequest.getEmail(), otpCode);
 
@@ -238,7 +238,7 @@ public class AuthServiceImpl implements AuthService {
         this.userRepository.save(user);
 
         if (resetPasswordTime == null) {
-            this.redisTemplate.opsForValue().set(resetPasswordTimeKey, 1, 3600, TimeUnit.SECONDS);
+            this.redisTemplate.opsForValue().set(resetPasswordTimeKey, 1, Duration.ofHours(1));
         } else {
             this.redisTemplate.opsForValue().increment(resetPasswordTimeKey);
         }

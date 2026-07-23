@@ -1,8 +1,12 @@
 package com.example.abcxyz.exception;
 
+import com.example.abcxyz.configuration.RefreshTokenCookieProvider;
 import com.example.abcxyz.dto.ApiResponse;
 import com.example.abcxyz.enums.ErrorCode;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,9 +25,21 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+    private final RefreshTokenCookieProvider refreshTokenCookieProvider;
+
+    public GlobalExceptionHandler(RefreshTokenCookieProvider refreshTokenCookieProvider) {
+        this.refreshTokenCookieProvider = refreshTokenCookieProvider;
+    }
+
     @ExceptionHandler(AppException.class)
-    public ResponseEntity<ApiResponse<?>> handleAppException(AppException ex) {
+    public ResponseEntity<ApiResponse<?>> handleAppException(AppException ex, HttpServletResponse response) {
         ErrorCode errorCode = ex.getErrorCode();
+
+        if (errorCode == ErrorCode.INVALID_REFRESH_TOKEN || errorCode == ErrorCode.EXPIRED_REFRESH_TOKEN) {
+            ResponseCookie cookie = this.refreshTokenCookieProvider.clear();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+        }
 
         return ResponseEntity
                 .status(errorCode.getHttpStatus())
@@ -44,7 +60,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toMap(
                         FieldError::getField,
                         fieldError -> fieldError.getDefaultMessage() != null ? fieldError.getDefaultMessage() : fieldError.getField() +
-                                                                                                                " not valid",
+                                " not valid",
                         (existsErrorMessage, newErrorMessage) -> existsErrorMessage
                 ));
 
@@ -122,7 +138,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleCompletableFutureException(CompletionException ex) {
         log.error("CompletableFuture unexpected error", ex.getCause());
 
-        return handleAppException(new AppException(ErrorCode.MOVIE_NOT_FOUND));
+        return ResponseEntity
+                .status(ErrorCode.MOVIE_NOT_FOUND.getHttpStatus())
+                .body(
+                        ApiResponse.error(
+                                ErrorCode.MOVIE_NOT_FOUND.getHttpStatus().value(),
+                                ErrorCode.MOVIE_NOT_FOUND.getMessage(),
+                                ErrorCode.MOVIE_NOT_FOUND.name()
+                        )
+                );
     }
 
     @ExceptionHandler(Exception.class)
