@@ -44,6 +44,7 @@ public class SecurityConfig {
                                 "/auth/**",
                                 "/medias/**",
                                 "/persons/**",
+                                "/notifications/**",
                                 "/check",
                                 "/error"
                         ).permitAll()
