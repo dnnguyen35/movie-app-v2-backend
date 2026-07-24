@@ -1,10 +1,12 @@
 package com.example.abcxyz.controller;
 
 import com.example.abcxyz.dto.ApiResponse;
+import com.example.abcxyz.dto.request.SendNotificationRequest;
 import com.example.abcxyz.dto.response.MovieStatsResponse;
 import com.example.abcxyz.dto.response.ReviewResponse;
 import com.example.abcxyz.dto.response.UserStatsResponse;
 import com.example.abcxyz.service.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -55,5 +57,12 @@ public class AdminController {
         this.adminService.unLockUser(userId);
 
         return ResponseEntity.ok(ApiResponse.success(200, "Successfully", null));
+    }
+
+    @PostMapping("/notify")
+    public ResponseEntity<ApiResponse<?>> sendNotification(@RequestBody @Valid SendNotificationRequest sendNotificationRequest) {
+        this.adminService.sendNotification(sendNotificationRequest.getNotificationMessage());
+
+        return ResponseEntity.ok(ApiResponse.success(200, "Send notification successfully", null));
     }
 }

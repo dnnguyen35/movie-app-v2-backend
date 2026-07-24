@@ -19,4 +19,6 @@ public interface AdminService {
     void unLockUser(Long userId);
 
     void removeReview(Long reviewId);
+
+    void sendNotification(String notifyMessage);
 }

@@ -13,6 +13,7 @@ import com.example.abcxyz.repository.FavoriteRepository;
 import com.example.abcxyz.repository.ReviewRepository;
 import com.example.abcxyz.repository.UserRepository;
 import com.example.abcxyz.service.AdminService;
+import com.example.abcxyz.service.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,13 +26,16 @@ public class AdminServiceImpl implements AdminService {
     private final ReviewRepository reviewRepository;
     private final FavoriteRepository favoriteRepository;
     private final ReviewMapper reviewMapper;
+    private final NotificationService notificationService;
 
     public AdminServiceImpl(UserRepository userRepository, ReviewRepository reviewRepository,
-                            FavoriteRepository favoriteRepository, ReviewMapper reviewMapper) {
+                            FavoriteRepository favoriteRepository, ReviewMapper reviewMapper,
+                            NotificationService notificationService) {
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.favoriteRepository = favoriteRepository;
         this.reviewMapper = reviewMapper;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -85,5 +89,10 @@ public class AdminServiceImpl implements AdminService {
         );
 
         this.reviewRepository.deleteById(reviewId);
+    }
+
+    @Override
+    public void sendNotification(String notificationMessage) {
+        this.notificationService.sendNotification(notificationMessage);
     }
 }
