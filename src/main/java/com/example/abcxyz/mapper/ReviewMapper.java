@@ -6,6 +6,8 @@ import com.example.abcxyz.entity.Review;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring",
         uses = {UserMapper.class}
 )
@@ -17,4 +19,6 @@ public interface ReviewMapper {
     Review toReview(ReviewCreateRequest reviewCreateRequest);
 
     ReviewResponse toReviewResponse(Review review);
+
+    List<ReviewResponse> toListReviewResponse(List<Review> reviews);
 }

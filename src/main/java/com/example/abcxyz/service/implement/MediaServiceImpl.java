@@ -2,6 +2,7 @@ package com.example.abcxyz.service.implement;
 
 import com.example.abcxyz.configuration.TmdbApi;
 import com.example.abcxyz.entity.Review;
+import com.example.abcxyz.mapper.ReviewMapper;
 import com.example.abcxyz.repository.FavoriteRepository;
 import com.example.abcxyz.repository.ReviewRepository;
 import com.example.abcxyz.service.MediaService;
@@ -23,13 +24,15 @@ public class MediaServiceImpl implements MediaService {
     private final FavoriteRepository favoriteRepository;
     private final ReviewRepository reviewRepository;
     private final TaskExecutor completableTaskExecutor;
+    private final ReviewMapper reviewMapper;
 
     public MediaServiceImpl(TmdbApi tmdbApi, FavoriteRepository favoriteRepository, ReviewRepository reviewRepository
-            , @Qualifier("completableTaskExecutor") TaskExecutor completableTaskExecutor) {
+            , @Qualifier("completableTaskExecutor") TaskExecutor completableTaskExecutor, ReviewMapper reviewMapper) {
         this.tmdbApi = tmdbApi;
         this.favoriteRepository = favoriteRepository;
         this.reviewRepository = reviewRepository;
         this.completableTaskExecutor = completableTaskExecutor;
+        this.reviewMapper = reviewMapper;
     }
 
     @Override
@@ -112,7 +115,7 @@ public class MediaServiceImpl implements MediaService {
         media.put("videos", videos.join());
         media.put("recommend", recommend.join());
         media.put("images", images.join());
-        media.put("reviews", reviews.join());
+        media.put("reviews", this.reviewMapper.toListReviewResponse(reviews.join()));
         media.put("isFavorite", isFavorite.join());
 
         return media;
