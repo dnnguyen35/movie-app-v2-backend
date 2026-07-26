@@ -41,9 +41,10 @@ jobs:
               ${EC2_USER}@${EC2_HOST} "
                 cd /home/ubuntu &&
                 sed -i 's/^BACKEND_TAG=.*/BACKEND_TAG=${CIRCLE_SHA1}/' .env &&
-                docker compose pull backend &&
-                docker compose up -d backend &&
-                docker image prune -a -f
+                sudo docker compose pull backend &&
+                sudo docker compose up -d backend &&
+                sudo docker image prune -a -f &&
+                sudo docker system prune -af
               "
 
 workflows:
