@@ -45,8 +45,8 @@ tmdb:
 jwt:
   access-token-key: ${JWT_ACCESS_TOKEN_KEY}
   refresh-token-key: ${JWT_REFRESH_TOKEN_KEY}
-  access-token-live-time: 5
-  refresh-token-live-time: 1
+  access-token-live-time: 15
+  refresh-token-live-time: 7
 
 redis:
   host: ${REDIS_HOST}
