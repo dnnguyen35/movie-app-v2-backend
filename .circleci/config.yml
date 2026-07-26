@@ -1,0 +1,47 @@
+version: 2.1
+
+jobs:
+  build-and-deploy:
+    machine:
+      image: ubuntu-2204:current
+
+    steps:
+      - checkout
+
+      - run:
+          name: Build Docker image
+          command: |
+            docker build \
+              -t ${DOCKERHUB_USERNAME}/movie-api:${CIRCLE_SHA1} \
+              -t ${DOCKERHUB_USERNAME}/movie-api:latest \
+              .
+
+      - run:
+          name: Login to Docker Hub
+          command: |
+            echo "${DOCKERHUB_ACCESS_TOKEN}" | docker login \
+              -u "${DOCKERHUB_USERNAME}" \
+              --password-stdin
+
+      - run:
+          name: Push Docker image
+          command: |
+            docker push ${DOCKERHUB_USERNAME}/movie-api:${CIRCLE_SHA1}
+            docker push ${DOCKERHUB_USERNAME}/movie-api:latest
+
+      - run:
+          name: Deploy backend to EC2
+          command: |
+            ssh -o StrictHostKeyChecking=no \
+              ${EC2_USER}@${EC2_HOST} "
+                cd /home/ubuntu/movie-app &&
+                sed -i 's/^BACKEND_TAG=.*/BACKEND_TAG=${CIRCLE_SHA1}/' .env &&
+                docker compose pull backend &&
+                docker compose up -d backend &&
+                docker image prune -a -f
+              "
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - build-and-deploy
