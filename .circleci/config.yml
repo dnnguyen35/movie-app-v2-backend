@@ -12,8 +12,8 @@ jobs:
           name: Build Docker image
           command: |
             docker build \
-              -t ${DOCKERHUB_USERNAME}/movie-api:${CIRCLE_SHA1} \
-              -t ${DOCKERHUB_USERNAME}/movie-api:latest \
+              -t ${DOCKERHUB_USERNAME}/movie-v2-be:${CIRCLE_SHA1} \
+              -t ${DOCKERHUB_USERNAME}/movie-v2-be:latest \
               .
 
       - run:
@@ -26,15 +26,15 @@ jobs:
       - run:
           name: Push Docker image
           command: |
-            docker push ${DOCKERHUB_USERNAME}/movie-api:${CIRCLE_SHA1}
-            docker push ${DOCKERHUB_USERNAME}/movie-api:latest
+            docker push ${DOCKERHUB_USERNAME}/movie-v2-be:${CIRCLE_SHA1}
+            docker push ${DOCKERHUB_USERNAME}/movie-v2-be:latest
 
       - run:
           name: Deploy backend to EC2
           command: |
             ssh -o StrictHostKeyChecking=no \
               ${EC2_USER}@${EC2_HOST} "
-                cd /home/ubuntu/movie-app &&
+                cd /home/ubuntu &&
                 sed -i 's/^BACKEND_TAG=.*/BACKEND_TAG=${CIRCLE_SHA1}/' .env &&
                 docker compose pull backend &&
                 docker compose up -d backend &&
@@ -44,4 +44,7 @@ jobs:
 workflows:
   build-and-deploy:
     jobs:
-      - build-and-deploy
+      - build-and-deploy:
+          filters:
+            branches:
+              only: main
