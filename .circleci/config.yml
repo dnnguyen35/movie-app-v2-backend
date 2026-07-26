@@ -37,6 +37,7 @@ jobs:
           name: Deploy backend to EC2
           command: |
             ssh -o StrictHostKeyChecking=no \
+              -o PubkeyAcceptedKeyTypes=+ssh-rsa \
               ${EC2_USER}@${EC2_HOST} "
                 cd /home/ubuntu &&
                 sed -i 's/^BACKEND_TAG=.*/BACKEND_TAG=${CIRCLE_SHA1}/' .env &&
