@@ -30,8 +30,9 @@ jobs:
             docker push ${DOCKERHUB_USERNAME}/movie-v2-be:latest
 
       - add_ssh_keys:
-          fingerprints: "SHA256:iTOCamk8NuBTC+80zyasKwTAIdIXhJZEwydbVj2VEgA"
-          
+          fingerprints:
+            - "SHA256:iTOCamk8NuBTC+80zyasKwTAIdIXhJZEwydbVj2VEgA"
+
       - run:
           name: Deploy backend to EC2
           command: |
