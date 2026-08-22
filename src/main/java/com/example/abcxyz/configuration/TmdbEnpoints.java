@@ -75,6 +75,7 @@ public class TmdbEnpoints {
                 .queryParam("query", query)
                 .queryParam("language", this.getLanguageMode(language))
                 .queryParamIfPresent("page", Optional.ofNullable(page))
+                .encode()
                 .build()
                 .toUri();
     }
