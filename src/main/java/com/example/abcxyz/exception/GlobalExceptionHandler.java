@@ -14,8 +14,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Map;
 import java.util.concurrent.CompletionException;
@@ -71,6 +73,44 @@ public class GlobalExceptionHandler {
                                 ErrorCode.INVALID_INPUT.getHttpStatus().value(),
                                 ErrorCode.INVALID_INPUT.getMessage(),
                                 ErrorCode.INVALID_INPUT.name(),
+                                errorMessages
+                        )
+                );
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        Map<String, String> errorMessages = Map.of(
+                ex.getParameterName(),
+                "Is required"
+        );
+
+        return ResponseEntity
+                .status(ErrorCode.BAD_REQUEST.getHttpStatus())
+                .body(
+                        ApiResponse.validateError(
+                                ErrorCode.BAD_REQUEST.getHttpStatus().value(),
+                                ErrorCode.BAD_REQUEST.getMessage(),
+                                ErrorCode.BAD_REQUEST.name(),
+                                errorMessages
+                        )
+                );
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ApiResponse<?>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        Map<String, String> errorMessages = Map.of(
+                ex.getName(),
+                "Invalid data type"
+        );
+
+        return ResponseEntity
+                .status(ErrorCode.BAD_REQUEST.getHttpStatus())
+                .body(
+                        ApiResponse.validateError(
+                                ErrorCode.BAD_REQUEST.getHttpStatus().value(),
+                                ErrorCode.BAD_REQUEST.getMessage(),
+                                ErrorCode.BAD_REQUEST.name(),
                                 errorMessages
                         )
                 );
