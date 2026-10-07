@@ -18,6 +18,10 @@ public class KkmovieConfig {
     public RestClient kkmovieRestClient() {
         RestClient kkmovieRestClient = RestClient.builder()
                 .baseUrl(this.kkmovieBaseUrl)
+                .requestInterceptor((request, body, execution) -> {
+                    log.info("Kkmovie request URL: {}", request.getURI());
+                    return execution.execute(request, body);
+                })
                 .defaultStatusHandler(HttpStatusCode::isError, (request, response) -> {
                     log.error("Kkmovie service error: {}", response.getStatusText());
                     throw new RuntimeException("Kkmovie service error");

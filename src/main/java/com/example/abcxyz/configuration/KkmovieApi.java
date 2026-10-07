@@ -133,8 +133,6 @@ public class KkmovieApi {
     }
 
     private Object executeRestClientGetRequest(URI getUri) {
-        log.info("Kkmovie URI: {}", getUri);
-
         return this.kkmovieRestClient
                 .get()
                 .uri(getUri)
