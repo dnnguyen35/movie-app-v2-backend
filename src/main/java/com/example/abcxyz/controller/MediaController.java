@@ -15,40 +15,108 @@ public class MediaController {
         this.mediaService = mediaService;
     }
 
-    @GetMapping("/{mediaType}/list/{mediaCategory}")
-    public ResponseEntity<ApiResponse<Object>> getList(@PathVariable("mediaType") String mediaType,
-                                                       @PathVariable("mediaCategory") String mediaCategory,
-                                                       @RequestParam(value = "page", defaultValue = "1") int page,
-                                                       @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
-    ) {
-        return ResponseEntity.ok(ApiResponse.success(200, "Success", this.mediaService.getList(mediaType,
-                mediaCategory, page, language)));
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse<Object>> getList(@RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getList(page)
+                )
+        );
     }
 
-    @GetMapping("/{mediaType}/genres")
-    public ResponseEntity<ApiResponse<Object>> getGenres(@PathVariable("mediaType") String mediaType,
-                                                         @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
-    ) {
-        return ResponseEntity.ok(ApiResponse.success(200, "Success", this.mediaService.getGenres(mediaType, language)));
+    @GetMapping("/list/{type}")
+    public ResponseEntity<ApiResponse<Object>> getListByType(@PathVariable("type") String type,
+                                                             @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getListByType(type, page)
+                )
+        );
     }
 
-    @GetMapping("/{mediaType}/search")
-    public ResponseEntity<ApiResponse<Object>> getSearch(@PathVariable("mediaType") String mediaType,
-                                                         @RequestParam("query") String query,
-                                                         @RequestParam(value = "page", defaultValue = "1") int page,
-                                                         @RequestHeader(value = "Accept-Language", defaultValue = "en") String language
-    ) {
-        return ResponseEntity.ok(ApiResponse.success(200, "Success", this.mediaService.getSearch(mediaType, query,
-                page, language)));
+    @GetMapping("/detail/{mediaSlug}")
+    public ResponseEntity<ApiResponse<Object>> getDetail(@PathVariable("mediaSlug") String mediaSlug,
+                                                         @RequestParam("mediaGenre") String mediaGenre,
+                                                         @RequestParam("mediaId") String mediaId) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getDetail(mediaSlug, mediaGenre, mediaId)
+                )
+        );
     }
 
-    @GetMapping("/{mediaType}/detail/{mediaId}")
-    public ResponseEntity<ApiResponse<Object>> getDetail(@PathVariable("mediaType") String mediaType,
-                                                         @PathVariable("mediaId") Long mediaId,
-                                                         @RequestHeader(value = "Accept-Language",
-                                                                 defaultValue = "en") String language
-    ) {
-        return ResponseEntity.ok(ApiResponse.success(200, "Success", this.mediaService.getDetail(mediaType, mediaId,
-                language)));
+    @GetMapping("/images/{mediaSlug}")
+    public ResponseEntity<ApiResponse<Object>> getImages(@PathVariable("mediaSlug") String mediaSlug) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getImages(mediaSlug)
+                )
+        );
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<ApiResponse<Object>> getGenres() {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getGenres()
+                )
+        );
+    }
+
+    @GetMapping("/genres/{genreSlug}")
+    public ResponseEntity<ApiResponse<Object>> getListByGenre(@PathVariable("genreSlug") String genreSlug,
+                                                              @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getListByGenre(genreSlug, page)
+                )
+        );
+    }
+
+    @GetMapping("/countries")
+    public ResponseEntity<ApiResponse<Object>> getCountries() {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getCountries()
+                )
+        );
+    }
+
+    @GetMapping("/country/{countrySlug}")
+    public ResponseEntity<ApiResponse<Object>> getListByCountry(@PathVariable("countrySlug") String countrySlug,
+                                                                @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getListByCountry(countrySlug, page)
+                )
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<Object>> getSearch(@RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                                         @RequestParam(value = "page", defaultValue = "1") Integer page) {
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        200,
+                        "Success",
+                        this.mediaService.getSearch(keyword, page)
+                )
+        );
     }
 }

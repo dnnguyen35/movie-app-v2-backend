@@ -2,11 +2,21 @@ package com.example.abcxyz.service;
 
 public interface MediaService {
 
-    Object getList(String mediaType, String mediaCategory, Integer page, String language);
+    Object getList(Integer page);
 
-    Object getGenres(String mediaType, String language);
+    Object getListByType(String type, Integer page);
 
-    Object getSearch(String mediaType, String query, Integer page, String language);
+    Object getDetail(String mediaSlug, String mediaGenre, String mediaId);
 
-    Object getDetail(String mediaType, Long mediaId, String language);
+    Object getImages(String mediaSlug);
+
+    Object getGenres();
+
+    Object getListByGenre(String genreSlug, Integer page);
+
+    Object getCountries();
+
+    Object getListByCountry(String countrySlug, Integer page);
+
+    Object getSearch(String keyword, Integer page);
 }

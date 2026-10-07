@@ -42,6 +42,9 @@ tmdb:
   base-url: ${TMDB_BASE_URL}
   api-key: ${TMDB_API_KEY}
 
+kkmovie:
+  base-url: ${KKMOVIE_BASE_URL}
+
 jwt:
   access-token-key: ${JWT_ACCESS_TOKEN_KEY}
   refresh-token-key: ${JWT_REFRESH_TOKEN_KEY}
